@@ -7,14 +7,13 @@ import { ICharacter } from 'types'
 
 export interface GetCharacterDetailsProps {
   url: string
-};
+}
 
 export function GetCharacterDetails({url}:GetCharacterDetailsProps) {
   const [character, setCharacter] = React.useState<Record<string, any>>();
 
   async function getCharacter() {
-    const response: AxiosResponse | Promise<AxiosResponse<any, any>> = api.get(url)
-    setCharacter(response)
+    const response = api.get(url)
     console.log('response', response)
   }
 
@@ -27,7 +26,7 @@ export function GetCharacterDetails({url}:GetCharacterDetailsProps) {
       </div>
     </>
   );
-};
+}
 
 export default GetCharacterDetails
 
