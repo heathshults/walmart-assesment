@@ -1,0 +1,16 @@
+import React from 'react';
+#STYLE#
+
+export interface #NAME#Props {
+  children?: React.ReactNode
+};
+
+export function #NAME#({children}:#NAME#Props) {
+  return (
+    <>
+      { children }
+    </>
+  );
+};
+
+export default #NAME#
