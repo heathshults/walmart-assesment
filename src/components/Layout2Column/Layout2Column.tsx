@@ -1,14 +1,13 @@
 import React from 'react';
 import logo from 'assets/img/21428161947-rick-and-morty-logo-png.webp'
 import NavLeft from 'components/NavLeft'
-import CharacterList from 'components/CharacterList'
 import { Outlet } from 'react-router-dom';
 import './Layout2Column.scss';
 
 
 export interface Layout2ColumnProps {
   children?: React.ReactNode
-};
+}
 
 export function Layout2Column() {
   return (
@@ -35,6 +34,6 @@ export function Layout2Column() {
       </div>
     </>
   );
-};
+}
 
 export default Layout2Column
