@@ -1,10 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 import api from 'config/api.config'
 import { NavLink } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import EventBus, { ShowEpisodeCharactersEvent } from 'utils/PubSubEvents/EventBus';
-import { IShowEpisodeCharacters, ICharacter } from 'types'
-import GetCharacterDetails from 'components/GetCharacterDetails';
+import EventBus from 'utils/PubSubEvents/EventBus';
+import { IShowEpisodeCharacters } from 'types'
+import EpisodeCharacterDetails from 'components/EpisodeCharacterDetails';
 import './CharacterList.scss';
 
 
@@ -12,17 +12,19 @@ import './CharacterList.scss';
 
 
 export interface CharacterListProps {
-  data?: number 
+  data?: string
+  key: string
 }
-
-export function CharacterList({data}:CharacterListProps): React.ReactElement<Promise<any>> {
-  // const [characterData, setCharacterData] = React.useState<Array<string>>();
+export default function CharacterList({data}:CharacterListProps): React.ReactElement<Promise<string>> {
+  
   // eslint-disable-next-line prefer-const
-  let eventData
+  data ? console.log(data) : null
+  let eventData: Record<string, any> | Record<string, any>[]
+  let episodeCharacters: Record<string, any>
   const [characterData, setCharacterData] = React.useState<Array<Record<string, any>>>()
   // const [episodeCharacters, setEpisodeCharacters] = React.useState<Array<Record<string, any>>>()
   const [charactersOnEpisode, setCharactersOnEpisode] = React.useState<Array<Record<string, any>>>()
-  // let charactersOnEpisode
+  let runOnce: boolean = false
   
   async function getCharacters() {
       const response = await api.get('/character')
@@ -30,17 +32,24 @@ export function CharacterList({data}:CharacterListProps): React.ReactElement<Pro
       console.log('characterData',response.data.results);
   }
 
+  function loadEpisodeCharacters(data: Record<string, any>){
+    episodeCharacters = data
+  }
+
 
   React.useEffect(()=> {
-    if (!data) {
+    if (!data && !runOnce) {
       getCharacters()
     }
 
     EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
-      console.log('episodeData',event.episodeData)
+      alert('event')
       setTimeout(()=> {
+      console.log('episodeData',event.episodeData)
         eventData = event?.episodeData as unknown as Array<Record<string, any>>
-        setCharactersOnEpisode(eventData)
+        loadEpisodeCharacters(eventData)
+        console.log(eventData)
+        
         setCharacterData([])
         // const coa = event?.episodeData as unknown as Array<Record<string, any>>
         
@@ -51,41 +60,42 @@ export function CharacterList({data}:CharacterListProps): React.ReactElement<Pro
     }, []);
 
 
-  return (
-    <>
-      <Scrollbars
-          autoHide
-          autoHeight
-          autoHeightMin={699}
-          autoHeightMax={699}
-        >
-          <div className="container align-items-stretch">
-          <div className="row justify-content-evenly">
-            
-              { !charactersOnEpisode && characterData ? characterData.map(character => (
-                <NavLink key={character.id} to={character.name.replace(/\s+/g, '-').toLowerCase()} className="col-2 my-3 mx-2">
-                  <img src={character.image} width="100%" height="auto"/>  
-                </NavLink>
-                )) : null 
-              }
-
-
-              { charactersOnEpisode ? charactersOnEpisode.map((character, index) => (
-                <GetCharacterDetails key={index} url={character.url}/>
-                  // <img src={`https://rickandmortyapi.com/api/character/avatar/${63}.jpeg`} width="100%" height="auto" alt={`character #${index}`}/>  
-                
+  return <>
+    <Scrollbars
+        autoHide
+        autoHeight
+        autoHeightMin={699}
+        autoHeightMax={699}
+      >
+        <div className="container align-items-stretch">
+        <div className="row justify-content-evenly">
+          
+            { !charactersOnEpisode && characterData ? characterData.map(character => (
+              <NavLink key={character.id} to={character.name.replace(/\s+/g, '-').toLowerCase()} className="col-2 my-3 mx-2">
+                <img src={character.image} width="100%" height="auto"/>  
+              </NavLink>
               )) : null 
-              }
+            }
 
 
-          </div>
-          </div>
-          </Scrollbars>
-    </>
-  );
+            { episodeCharacters ? episodeCharacters.map((index: number, characterUrl: string) => (
+              
+                <EpisodeCharacterDetails key={index} url={characterUrl} cssClass=""/>
+              
+                // <img src={`https://rickandmortyapi.com/api/character/avatar/${63}.jpeg`} width="100%" height="auto" alt={`character #${index}`}/>  
+              
+            )) : null 
+            }
+
+
+        </div>
+        </div>
+        </Scrollbars>
+  </>;
 }
 
-export default CharacterList
+const _CharacterList = CharacterList
+export { _CharacterList as CharacterList }
 
 
 // {

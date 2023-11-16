@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import api from 'config/api.config'
 import { NavLink } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars-2';
@@ -15,9 +15,9 @@ import { IShowEpisodeCharacters, ICharacter } from 'types'
 
 
 export function NavLeft() {
-  const [episodes, setEpisodes] = React.useState<Array<IEpisodes> | any>()
-  const [episodeCharacters, setEpisodeCharacters] = React.useState<IEpisodes>()
-  const [runOnce, setRunOnce] = React.useState<boolean>(false)
+  const [episodes, setEpisodes] = useState<Array<IEpisodes> | any>()
+  const [episodeCharacters, setEpisodeCharacters] = useState<IEpisodes>()
+  const [runOnce, setRunOnce] = useState<boolean>(false)
 
   async function getEpisodes() {
     setRunOnce(true)
@@ -30,18 +30,18 @@ export function NavLeft() {
     const episode = episodes?.find(epi => epi.id === id)
     setEpisodeCharacters(episode)
     console.log('showEpisodeCharacters', episode.characters)
-    return EventBus.publish('show-episode-characters', new ShowEpisodeCharactersEvent(episodeCharacters))
+    return EventBus.publish('show-episode-characters', new ShowEpisodeCharactersEvent(episode.characters))
 
   }
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     !runOnce ? getEpisodes() : void (0)
     console.log('useEffect', episodes)
 
-    // EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
-    //   console.log('episodeCharacters', episodeCharacters)
-    // })
+    EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
+      console.log('episodeCharacters', episodeCharacters)
+    })
   }, []);
 
   return (

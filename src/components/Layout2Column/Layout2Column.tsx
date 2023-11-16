@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import logo from 'assets/img/21428161947-rick-and-morty-logo-png.webp'
 import NavLeft from 'components/NavLeft'
 import { Outlet } from 'react-router-dom';

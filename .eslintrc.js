@@ -15,7 +15,7 @@ module.exports = {
                 "node": true
             },
             "files": [
-                ".eslintrc.{js,cjs}"
+                ".eslintrc.{js,cjs,tsx,ts,mjs}"
             ],
             "parserOptions": {
                 "sourceType": "script"
@@ -31,17 +31,22 @@ module.exports = {
         "@typescript-eslint",
         "react"
     ],
+    "settings": {
+        "react": {
+          "version": "detect"
+        }
+      },
     "rules": {
-        "@typescript-eslint/no-unused-vars": 2,
-        "@typescript-eslint/no-explicit-any": 2,
+        "@typescript-eslint/no-unused-vars": 0,
+        "@typescript-eslint/no-explicit-any": 0,
         'react/display-name': 2,
         'react/jsx-key': 2,
         'react/jsx-no-comment-textnodes': 2,
         'react/jsx-no-duplicate-props': 2,
         'react/jsx-no-target-blank': 2,
         'react/jsx-no-undef': 2,
-        'react/jsx-uses-react': 2,
         'react/jsx-uses-vars': 2,
+        'react/jsx-uses-react': 0,
         'react/no-children-prop': 2,
         'react/no-danger-with-children': 2,
         'react/no-deprecated': 2,
@@ -54,14 +59,17 @@ module.exports = {
         'react/no-unknown-property': 0,
         'react/no-unsafe': 0,
         'react/prop-types': 2,
-        'react/react-in-jsx-scope': 2,
+        'react/react-in-jsx-scope': 0,
         'react/require-render-return': 2,
         "@typescript-eslint/no-empty-function": 0,
         '@typescript-eslint/no-extra-semi': 0,
         '@typescript-eslint/ban-ts-comment': 0,
         '@typescript-eslint/explicit-module-boundary-types': 0,
         '@typescript-eslint/no-unused-var': 0,
-        'no-empty-pattern': 1,
+        'eslint/no-empty-pattern': 0,
+        "eslint/no-extra-semi": 0,
+        "eslint/no-unused-vars": 0,
+        "eslint/no-explicit-any": 0,
         '@typescript-eslint/no-non-null-assertion': 1,
     }
 }

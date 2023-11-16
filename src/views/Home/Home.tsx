@@ -1,5 +1,4 @@
-import React from 'react';
-import CharacterList from 'components/CharacterList';
+// import CharacterList from 'components/CharacterList';
 import './Home.scss';
 
 // export interface HomeProps {
@@ -14,9 +13,9 @@ export function Home() {
 
   return (
     <>
-      <CharacterList/>
+      
     </>
   );
-};
+}
 
 export default Home

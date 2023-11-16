@@ -10,7 +10,7 @@ type ObserversMap = {
 };
 
 /* Singleton implementation of Global Event Bus */
-class EventBus {
+export class EventBus {
   private static instance: EventBus;
   private observers: ObserversMap = {};
 
@@ -32,7 +32,6 @@ class EventBus {
       };
     }
 
-    // @ts-ignore
     EventBus.getInstance().observers[type].publish(event);
   }
 
@@ -47,7 +46,6 @@ class EventBus {
       };
     }
 
-    // @ts-ignore
     return EventBus.getInstance().observers[type].subscribe(listener);
   }
 }
