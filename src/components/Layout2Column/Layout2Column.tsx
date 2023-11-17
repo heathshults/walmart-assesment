@@ -4,12 +4,12 @@ import NavLeft from 'components/NavLeft'
 import { Outlet } from 'react-router-dom';
 import './Layout2Column.scss';
 
-
 export interface Layout2ColumnProps {
   children?: React.ReactNode
 }
 
 export function Layout2Column() {
+
   return (
     <>
       <div className="container-fluid m-0 p-0">
