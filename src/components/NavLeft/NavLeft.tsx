@@ -5,7 +5,9 @@ import { Scrollbars } from 'react-custom-scrollbars-2';
 import { IEpisodes } from 'types';
 import EventBus, { ShowEpisodeCharactersEvent } from 'utils/PubSubEvents/EventBus';
 import './NavLeft.scss';
-import { IShowEpisodeCharacters, ICharacter } from 'types'
+import { IShowEpisodeCharacters } from 'types'
+import GlobalVContext from 'context/global-context';
+
 
 
 // export interface NavLeftProps {
@@ -18,6 +20,7 @@ export function NavLeft() {
   const [episodes, setEpisodes] = useState<Array<IEpisodes> | any>()
   const [episodeCharacters, setEpisodeCharacters] = useState<IEpisodes>()
   const [runOnce, setRunOnce] = useState<boolean>(false)
+  const gvars = React.useContext(GlobalVContext)
 
   async function getEpisodes() {
     setRunOnce(true)
@@ -30,6 +33,7 @@ export function NavLeft() {
     const episode = episodes?.find(epi => epi.id === id)
     setEpisodeCharacters(episode)
     console.log('showEpisodeCharacters', episode.characters)
+    gvars.currentEpisodeCharacters = episode.characters
     return EventBus.publish('show-episode-characters', new ShowEpisodeCharactersEvent(episode.characters))
 
   }
@@ -42,6 +46,7 @@ export function NavLeft() {
     EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
       console.log('episodeCharacters', episodeCharacters)
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

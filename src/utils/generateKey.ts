@@ -1,12 +1,12 @@
 
 
-async function generateGUId() {
+export async function generateGUId() {
   const key = await crypto.randomUUID
 
   return key
 }
 
-async function generateAESKey() {
+export async function generateAESKey() {
   const key = await window.crypto.subtle.generateKey(
     {
       name: "AES-GCM",

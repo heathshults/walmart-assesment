@@ -1,1 +1,2 @@
-export * from './global-context'
+import GlobalVContext from './global-context';
+export default GlobalVContext;

@@ -15,10 +15,11 @@ export function Layout2Column() {
       <div className="container-fluid m-0 p-0">
         <div className="layout">
           <header className="header">
-            <img src={logo} width="300"/>
-            <h1 className="logo">Characters</h1>
+            <img src={logo} width="300" alt="Rick and Morty"/>
           </header>
           <main className="content">
+            
+            
             <aside className="nav-left">
               <div className="nav-left-content">
                 <NavLeft/>
