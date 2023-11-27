@@ -18,7 +18,7 @@ import GlobalVContext from 'context/global-context';
 
 export function NavLeft() {
   const [episodes, setEpisodes] = React.useState<Array<Record<string, any>> | any>()
-  const [episodeCharacters, setEpisodeCharacters] = React.useState<IEpisodes>()
+  const [episodeCharacters, setEpisodeCharacters] = React.useState<string>()
   const [runOnce, setRunOnce] = React.useState<boolean>(false)
   const gvars = React.useContext(GlobalVContext)
 
@@ -28,7 +28,7 @@ export function NavLeft() {
     setEpisodes(response.data.results)
   }
 
-  async function showEpisodeCharacters(id: number, characters:string) {
+  async function showEpisodeCharacters(id: number) {
     const episode = episodes?.find(epi => epi.id === id)
     setEpisodeCharacters(episode)
     console.log('showEpisodeCharacters', episode)
@@ -62,7 +62,7 @@ export function NavLeft() {
               <NavLink 
                 key={episode.id} 
                 to={encodeURIComponent(episode.name.replace(/\s+/g, '-').toLowerCase())} 
-                onClick={() => showEpisodeCharacters(episode.id, episode.characters)} 
+                onClick={() => showEpisodeCharacters(episode.id)} 
                 className="btn btn-outline-primary mx-auto my-3 text-start"
               >
                 {episode.name}

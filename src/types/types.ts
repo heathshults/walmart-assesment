@@ -56,7 +56,7 @@ export interface Location {
 
 
 // episodes  
-  export interface IEpisodes extends Array<string> {
+  export interface IEpisodes extends Array<any> {
     id:         number;
     name:       string;
     air_date:   string;
@@ -88,7 +88,7 @@ export interface Location {
 
 /* Event Interfaces */
 export interface IShowEpisodeCharacters extends IBaseEvent {
-  episodeData: IEpisodes;
+  episodeData: Array<string>;
 }
 export interface ILoadDefaultCharacters extends IBaseEvent {
   characterData: ICharacter;

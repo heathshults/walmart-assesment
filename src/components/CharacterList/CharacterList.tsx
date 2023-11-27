@@ -3,18 +3,16 @@ import api from 'config/api.config'
 import { NavLink } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import EventBus from 'utils/PubSubEvents/EventBus';
-import EpisodeCharacterDetails from 'components/EpisodeCharacterDetails';
 import GlobalVContext from 'context/global-context';
-import { CharacterListProps } from 'types/types';
+import { CharacterListProps, IEpisodes } from 'types/types';
 
-import './CharacterList.scss';
+import css from './CharacterList.module.scss';
 
-export default function CharacterList({cssClass}: CharacterListProps) {
-  let eventData = null
+export default function CharacterList({ cssClass }: CharacterListProps) {
+  const [eventData, setEventData] = React.useState<Array<string>>([])
   const [currentEpisodeCharacters, setCurrentEpisodeCharacters] = React.useState([])
   const [characterData, setCharacterData] = React.useState([])
   const gvars = React.useContext(GlobalVContext)
-  const runOnce = React.useRef(false)
   const [showEpisodeCharacters, setShowEpisodeCharacters] = React.useState(false)
 
   // Gets all characters
@@ -27,60 +25,76 @@ export default function CharacterList({cssClass}: CharacterListProps) {
 
   React.useEffect(() => { getCharacters() }, [])
 
-  interface EpisodeCharacterDetailsProps {
-    data: any
-    cssClass: string
-  }
-
-  const EpisodeCharactersRenderer = ({data, cssClass}: EpisodeCharacterDetailsProps) => {
-    return (
-      data.map(async url => {
-        const response = await api.get(url)
-        setCurrentEpisodeCharacters(prevState => [...prevState, response.data])
-        console.log('handleShowEpisodeCharacters', response.data)
-        return (  
-          <>
-            {/*<NavLink
-                key={response.data.id + Math.random()}
-                to={encodeURIComponent(response.data.name.replace(/\s+/g, '-').toLowerCase())}
-                className={`col-2 my-3 mx-2 ${cssClass}`}
-              >
-                <img src={response.data.image} alt={response.data.name} />
-              </NavLink> */}
-              { showEpisodeCharacters ?
-              <figure key={response.data.id + Math.random()}  className={`col-2 my-3 mx-2 character-display ${cssClass}`} style={{backgroundImage: response.data.image}}>
-              <span className='character-display-name'>
-                {response.data.name}
-                <span className="character-display-info">
-                  Status: {response.data.status} <br/>
-                  Species: {response.data.species}
-                </span>
-              </span>
-            </figure> : null }
-            </>
-          )
-   
-      })
-    )
-  }
-
   React.useEffect(() => {
-
     EventBus.subscribe('show-episode-characters', (event => {
-      eventData = event?.episodeData
+      setEventData(event?.episodeData)
       setCharacterData([])
       setShowEpisodeCharacters(true)
-      console.log('eventData', event?.episodeData)
+      console.log('eventData-eventbus', event?.episodeData)
     }))
   }, []);
 
+
+  interface EpisodeCharacterDetailsProps {
+    data: Array<string>
+    cssClass: string
+  }
+
+  const EpisodeCharactersRenderer = ({ data, cssClass }: EpisodeCharacterDetailsProps) => {
+    const container = React.useRef<HTMLDivElement>(null)
+   
+      if (data) data.map(url => api.get(url)
+      .then(response => response.data)
+      .then(data => {
+        console.log('data', data)
+          
+          const element = `
+          <div 
+            key="${data.id + Math.random()}"
+            class="ratio ratio-1x1 p-2"
+            style="background-image: url('${data.image}'); background-size: cover; background-position: top center;"
+            >
+            <span class='${css.characterDisplayName}'>
+            ${data.name}
+            <span class='${css.characterDisplayInfo}'>
+              Status: ${data.status} <br />
+              Species: ${data.species}
+            </span>
+          </span>
+            
+            
+            </div>
+            `
+            
+            const character = document.createElement('div')
+            character.classList.add('my-3', 'mx-2', cssClass, css.characterDisplay)
+            character.innerHTML = element
+            
+          container.current?.appendChild(character)
+      }))
+      
+{/* <img 
+              href='${data.image}' 
+              class="my-3 mx-2 ${css.episodeCharacterImage} ${cssClass}"
+            /> */}
+      
+    return (
+      <>
+
+        {showEpisodeCharacters ?
+          <div ref={container} className="w-100 100vh"></div>
+       : null}
+      </>
+
+    )
+  }
 
   interface CharacterListProps {
     data: any
     cssClass: string
   }
 
-  const CharacterListRenderer = ({data, cssClass}:CharacterListProps) => {
+  const CharacterListRenderer = ({ data, cssClass }: CharacterListProps) => {
     return (
       <>
         {data ?
@@ -90,8 +104,9 @@ export default function CharacterList({cssClass}: CharacterListProps) {
                 key={character.id + Math.random()}
                 to={encodeURIComponent(character.name.replace(/\s+/g, '-').toLowerCase())}
                 className={`col-2 my-3 mx-2 ${cssClass}`}
+                style={{width: '33.333333%'}}
               >
-                <img src={character.image} alt={character.name} />
+                <img src={character.image} alt={character.name} className={css.characterImage} />
               </NavLink>
             )
           })
@@ -101,38 +116,30 @@ export default function CharacterList({cssClass}: CharacterListProps) {
   }
 
   return (
-   <>
-       <Scrollbars
-          autoHide
-          autoHeight
-          autoHeightMin={699}
-          autoHeightMax={699}
-        > 
-    <div className={`container align-items-stretch`}>
-      <div className="row justify-content-evenly">
-        <>
-          {console.log('rendering character list', characterData)}
-        </>
-        <>
-          {characterData ?
-            <CharacterListRenderer data={characterData} cssClass="character-image" />
-          : null}
-        </>
-        <>
-          {eventData ? (
+    <>
+      <Scrollbars
+        autoHide
+        autoHeight
+        autoHeightMin={699}
+        autoHeightMax={699}
+      >
+        <div className={`container align-items-stretch`}>
+          <div className="row justify-content-evenly">
+        <span className="mx-auto">
             <>
-        
-              <EpisodeCharactersRenderer
-                cssClass="character-image"
-                data={eventData}
-              />
-            </>
-          ) : null}
-        </>
+              {characterData ?
+                <CharacterListRenderer data={characterData} cssClass="d-inline-flex" />
+                : null}
+              {eventData ? 
 
-      </div>
-    </div>
-    </Scrollbars>
+                <EpisodeCharactersRenderer cssClass="d-inline-flex" data={eventData} />
+                : null}
+            </>
+
+        </span>
+          </div>
+        </div>
+      </Scrollbars>
     </>
   );
 }
