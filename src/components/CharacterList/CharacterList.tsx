@@ -42,13 +42,13 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
 
   const EpisodeCharactersRenderer = ({ data, cssClass }: EpisodeCharacterDetailsProps) => {
     const container = React.useRef<HTMLDivElement>(null)
-   
-      if (data) data.map(url => api.get(url)
+
+    if (data) data.map(url => api.get(url)
       .then(response => response.data)
       .then(data => {
         console.log('data', data)
-          
-          const element = `
+
+        const element = `
           <div 
             key="${data.id + Math.random()}"
             class="ratio ratio-1x1 p-2"
@@ -65,25 +65,25 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
             
             </div>
             `
-            
-            const character = document.createElement('div')
-            character.classList.add('my-3', 'mx-2', cssClass, css.characterDisplay)
-            character.innerHTML = element
-            
-          container.current?.appendChild(character)
+
+        const character = document.createElement('div')
+        character.classList.add('my-3', 'mx-2', cssClass, css.characterDisplay)
+        character.innerHTML = element
+
+        container.current?.appendChild(character)
       }))
-      
-{/* <img 
+
+    {/* <img 
               href='${data.image}' 
               class="my-3 mx-2 ${css.episodeCharacterImage} ${cssClass}"
             /> */}
-      
+
     return (
       <>
 
         {showEpisodeCharacters ?
           <div ref={container} className="w-100 100vh"></div>
-       : null}
+          : null}
       </>
 
     )
@@ -104,7 +104,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
                 key={character.id + Math.random()}
                 to={encodeURIComponent(character.name.replace(/\s+/g, '-').toLowerCase())}
                 className={`col-2 my-3 mx-2 ${cssClass}`}
-                style={{width: '33.333333%'}}
+                style={{ width: '33.333333%' }}
               >
                 <img src={character.image} alt={character.name} className={css.characterImage} />
               </NavLink>
@@ -125,18 +125,18 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
       >
         <div className={`container align-items-stretch`}>
           <div className="row justify-content-evenly">
-        <span className="mx-auto">
-            <>
-              {characterData ?
-                <CharacterListRenderer data={characterData} cssClass="d-inline-flex" />
-                : null}
-              {eventData ? 
+            <span className="mx-auto">
+              <>
+                {characterData ?
+                  <CharacterListRenderer data={characterData} cssClass="d-inline-flex" />
+                  : null}
+                {eventData ?
 
-                <EpisodeCharactersRenderer cssClass="d-inline-flex" data={eventData} />
-                : null}
-            </>
+                  <EpisodeCharactersRenderer cssClass="d-inline-flex" data={eventData} />
+                  : null}
+              </>
 
-        </span>
+            </span>
           </div>
         </div>
       </Scrollbars>

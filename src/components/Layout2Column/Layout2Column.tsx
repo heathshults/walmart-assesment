@@ -15,14 +15,14 @@ export function Layout2Column() {
       <div className="container-fluid m-0 p-0">
         <div className="layout">
           <header className="header">
-            <img src={logo} width="300" alt="Rick and Morty"/>
+            <img src={logo} width="300" alt="Rick and Morty" />
           </header>
           <main className="content">
-            
-            
+
+
             <aside className="nav-left">
               <div className="nav-left-content">
-                <NavLeft/>
+                <NavLeft />
               </div>
             </aside>
             <section className="main-content">
@@ -31,7 +31,7 @@ export function Layout2Column() {
           </main>
           <footer className="footer">footer</footer>
         </div>
-      
+
       </div>
     </>
   );

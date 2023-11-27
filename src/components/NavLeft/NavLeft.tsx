@@ -59,10 +59,10 @@ export function NavLeft() {
             autoHeightMax={610}
           >
             {episodes ? episodes.map(episode => (
-              <NavLink 
-                key={episode.id} 
-                to={encodeURIComponent(episode.name.replace(/\s+/g, '-').toLowerCase())} 
-                onClick={() => showEpisodeCharacters(episode.id)} 
+              <NavLink
+                key={episode.id}
+                to={encodeURIComponent(episode.name.replace(/\s+/g, '-').toLowerCase())}
+                onClick={() => showEpisodeCharacters(episode.id)}
                 className="btn btn-outline-primary mx-auto my-3 text-start"
               >
                 {episode.name}

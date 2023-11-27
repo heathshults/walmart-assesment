@@ -7,17 +7,17 @@ import './Home.scss';
 // };
 
 export function Home() {
-  
-  
-  
-  
+
+
+
+
 
   return (
     <>
-    <div className="vstack">
-      <h1 className="logo text-center mt-3">Characters</h1>
-      <CharacterList/>
-    </div>
+      <div className="vstack">
+        <h1 className="logo text-left mt-3">Characters</h1>
+        <CharacterList />
+      </div>
     </>
   );
 }
