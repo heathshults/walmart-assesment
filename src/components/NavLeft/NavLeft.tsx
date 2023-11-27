@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 import api from 'config/api.config'
 import { NavLink } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars-2';
@@ -17,36 +17,34 @@ import GlobalVContext from 'context/global-context';
 
 
 export function NavLeft() {
-  const [episodes, setEpisodes] = useState<Array<IEpisodes> | any>()
-  const [episodeCharacters, setEpisodeCharacters] = useState<IEpisodes>()
-  const [runOnce, setRunOnce] = useState<boolean>(false)
+  const [episodes, setEpisodes] = React.useState<Array<Record<string, any>> | any>()
+  const [episodeCharacters, setEpisodeCharacters] = React.useState<IEpisodes>()
+  const [runOnce, setRunOnce] = React.useState<boolean>(false)
   const gvars = React.useContext(GlobalVContext)
 
   async function getEpisodes() {
     setRunOnce(true)
     const response = await api.get('/episode')
     setEpisodes(response.data.results)
-    console.log('getepisodes', response.data.results);
   }
 
-  async function showEpisodeCharacters(id: number) {
+  async function showEpisodeCharacters(id: number, characters:string) {
     const episode = episodes?.find(epi => epi.id === id)
     setEpisodeCharacters(episode)
-    console.log('showEpisodeCharacters', episode.characters)
+    console.log('showEpisodeCharacters', episode)
     gvars.currentEpisodeCharacters = episode.characters
     return EventBus.publish('show-episode-characters', new ShowEpisodeCharactersEvent(episode.characters))
 
   }
 
 
-  useEffect(() => {
+  React.useEffect(() => {
     !runOnce ? getEpisodes() : void (0)
     console.log('useEffect', episodes)
 
     EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
       console.log('episodeCharacters', episodeCharacters)
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -64,7 +62,7 @@ export function NavLeft() {
               <NavLink 
                 key={episode.id} 
                 to={encodeURIComponent(episode.name.replace(/\s+/g, '-').toLowerCase())} 
-                onClick={() => showEpisodeCharacters(episode.id)} 
+                onClick={() => showEpisodeCharacters(episode.id, episode.characters)} 
                 className="btn btn-outline-primary mx-auto my-3 text-start"
               >
                 {episode.name}

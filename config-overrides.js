@@ -1,8 +1,6 @@
-// https://github.com/arackaf/customize-cra/blob/master/api.md.
+const rewireEslint = require('react-app-rewire-eslint');
 
-const {
-  useBabelRc,
-  removeModuleScopePlugin,
-  override,
-} = require("customize-cra");
-module.exports = override(useBabelRc(), removeModuleScopePlugin());
+module.exports = function override(config, env) {
+ config = rewireEslint(config, env);
+ return config;
+}

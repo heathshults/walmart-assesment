@@ -1,61 +1,64 @@
 import * as React from 'react';
-import api from 'config/api.config'
 import EventBus from 'utils/PubSubEvents/EventBus'
 import GlobalVContext from 'context/global-context';
-import { ICharacter } from 'types'
-import { AxiosResponse } from 'axios';
-import './EpisodeCharacterDetails.scss';
 import { NavLink } from 'react-router-dom';
-import { Result, EpisodeCharacterDetailsProps } from 'types/types'
-import { resolve } from 'path';
+import './EpisodeCharacterDetails.scss';
+import api from 'config/api.config';
 
 
 
-export function EpisodeCharacterDetails({data, cssClass}:EpisodeCharacterDetailsProps) {
-  const [character, setCharacter] = React.useState<Record<string, any>>([]);
-  const [characterDetailUrls, setCharacterDetailUrls] = React.useState<string[]>([])
+export function EpisodeCharacterDetails(props){
+  const {data, cssClass} = props
+  let eventData
+  const [episodeCharacterUrl, setEpisodeCharacterUrl] = React.useState([]);
+  const [characterUrlList, setCharacterUrlList] = React.useState([])
   const gvars = React.useContext(GlobalVContext)
-  const [display, setDisplay] = React.useState()
-  
-  React.useEffect(()=> {
     
-    EventBus.subscribe('show-episode-characters', 
-    (event: any) => {
-      setCharacterDetailUrls(event)
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
-  async function processCharacter(url) {
-    const characterDetail = await gvars.go.get(url)
-    setDisplay(()=> characterDetail.data.map(epichar => (
+  React.useEffect(() => {
+    EventBus.subscribe('show-episode-characters', (event) => {
+      eventData = event.episodeData;
+      console.log('character details urls: ', eventData)
+    }); 
+
+  })
+  
+
+
+    return (
       <>
-        <NavLink 
-          key={character.id} 
-          to={character.name.replace(/\s+/g, '-').toLowerCase()} 
-          className={`character-display ${cssClass} col-2 my-3 mx-2`} 
-          style={{backgroundImage: character.image, }}>
-          <span className="character-display-name">{character.name}</span>
-        </NavLink> 
+        <div className="container">
+          <div className="row">
+            { eventData ? 
+            eventData.map(url => {
+              const response = api.get(url)
+              
+              console.log('character details', response.data)
+            }) : null}
+          </div>
+        </div>
       </>
-    )))
-
+    )
   }
 
-  return (
-    <>
-        {/* src={`https://rickandmortyapi.com/api/character/avatar/${63}.jpeg`}  */}
-      
-      { characterDetailUrls ? 
-          characterDetailUrls.map((epiCharacter) => ( <>{processCharacter(epiCharacter)}</> )
-      )
-      
-      : null }
-    </>
-  );
-}
+  
+
 
 export default EpisodeCharacterDetails
+
+
+/* 
+<figure key={index}  className="col-2 my-3 mx-2 character-display" style={{backgroundImage: character.image}}>
+  <span className='character-display-name'>
+    {character.name}
+    <span className="character-display-info">
+      Status: {character.status} <br/>
+      Species: {character.species}
+    </span>
+  </span>
+</figure>
+
+*/
 
 /** 
  * Character details model
@@ -63,15 +66,15 @@ export default EpisodeCharacterDetails
 /*
 
 <div key={index} className="col-2 my-3 mx-2">
-                  <figure className="character-display" style={{backgroundImage: character.image}}>
-                    <span className='character-display-name'>
-                      {character.name}
-                      <span className="character-display-info">
-                        Status: {character.status} <br/>
-                        Species: {character.species}
-                      </span>
-                    </span>
-                  </figure>
+    <figure className="character-display" style={{backgroundImage: character.image}}>
+      <span className='character-display-name'>
+        {character.name}
+        <span className="character-display-info">
+          Status: {character.status} <br/>
+          Species: {character.species}
+        </span>
+      </span>
+    </figure>
 
-                </div>
+  </div>
 */

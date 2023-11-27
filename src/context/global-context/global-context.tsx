@@ -8,18 +8,18 @@ export const fetcher = axios.create({
   timeout: 1000,
   headers: {'X-Custom-Header': 'Rick&Morty'}
 });
-
+ 
 
 export const config: iGlobalConfig = {
   go: fetcher,
   api: {
     baseUrl: process.env.REACT_APP_API_BASE_URL
   },
-  characters: [],
-  episodes: [],
+  characters: [], // Add an empty array for characters
   currentEpisodeCharacters: [],
+  allCharacters: [],
+};
 
-}
 console.log('config', config)
 
 export interface iGlobalProviderProps {

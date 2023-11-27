@@ -3,170 +3,144 @@ import api from 'config/api.config'
 import { NavLink } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import EventBus from 'utils/PubSubEvents/EventBus';
-import { IShowEpisodeCharacters } from 'types'
 import EpisodeCharacterDetails from 'components/EpisodeCharacterDetails';
 import GlobalVContext from 'context/global-context';
-import { generateAESKey } from 'utils/generateKey';
+import { CharacterListProps } from 'types/types';
 
 import './CharacterList.scss';
 
-
-
-
-
-export interface CharacterListProps {
-  data?: string
-  key?: string
-}
-export default function CharacterList({data}:CharacterListProps): React.ReactElement<Promise<string>> {
-  
-  // eslint-disable-next-line prefer-const
-  console.log(data)
-  const [eventData, setEventData] = React.useState<Array<string>>([])
-  const [currentEpisodeCharacters, setCurrentEpisodeCharacters] = React.useState<Array<string>>([])
-  const [characterData, setCharacterData] = React.useState<Array<Record<string, any>>>()
-  const [charactersOnEpisode, setCharactersOnEpisode] = React.useState<Array<string>>()
+export default function CharacterList({cssClass}: CharacterListProps) {
+  let eventData = null
+  const [currentEpisodeCharacters, setCurrentEpisodeCharacters] = React.useState([])
+  const [characterData, setCharacterData] = React.useState([])
   const gvars = React.useContext(GlobalVContext)
   const runOnce = React.useRef(false)
-  
+  const [showEpisodeCharacters, setShowEpisodeCharacters] = React.useState(false)
+
+  // Gets all characters
   async function getCharacters() {
-    if (runOnce) console.info('Can only run getCharacters one time and it has definitely ran.')
     const response = await api.get('/character')
-    setCharacterData(response.data.results)
-    gvars.characters = characterData
-    console.log('characterData',response.data.results)     
+    setCharacterData(response.data.results);
+    gvars.allCharacters = response.data.results
+    console.log('characterData top', characterData)
   }
-  
-  
-  function loadEpisodeCharacters(data: Array<string>) {
-    console.log('loadEpisodeCharacters', data)
-    setCurrentEpisodeCharacters(data)
-    // const test = data.map((characterUrl: string) => {JSON.stringify(characterUrl)})
+
+  React.useEffect(() => { getCharacters() }, [])
+
+  interface EpisodeCharacterDetailsProps {
+    data: any
+    cssClass: string
   }
-  
-  
-  React.useEffect(()=> {
-    
-    if (!data && !runOnce.current) {
-      getCharacters()
-      runOnce.current = true
-    }
 
-    EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
-      
-      // setTimeout(()=> {
-      console.log('episodeData',event.episodeData)
-      setEventData(event?.episodeData as unknown as Array<string>)
-        loadEpisodeCharacters(eventData)
-        console.log('bottom of subscribe',eventData)
-        
-        
-        // const coa = event?.episodeData as unknown as Array<Record<string, any>>
-        
-        console.log('useEffect EventBus.subscribe ', charactersOnEpisode)
-      // }, 2000)
-    })
-    console.log('charactersOnEpisode', eventData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    console.log('gvars.characters',gvars.characters)
+  const EpisodeCharactersRenderer = ({data, cssClass}: EpisodeCharacterDetailsProps) => {
+    return (
+      data.map(async url => {
+        const response = await api.get(url)
+        setCurrentEpisodeCharacters(prevState => [...prevState, response.data])
+        console.log('handleShowEpisodeCharacters', response.data)
+        return (  
+          <>
+            {/*<NavLink
+                key={response.data.id + Math.random()}
+                to={encodeURIComponent(response.data.name.replace(/\s+/g, '-').toLowerCase())}
+                className={`col-2 my-3 mx-2 ${cssClass}`}
+              >
+                <img src={response.data.image} alt={response.data.name} />
+              </NavLink> */}
+              { showEpisodeCharacters ?
+              <figure key={response.data.id + Math.random()}  className={`col-2 my-3 mx-2 character-display ${cssClass}`} style={{backgroundImage: response.data.image}}>
+              <span className='character-display-name'>
+                {response.data.name}
+                <span className="character-display-info">
+                  Status: {response.data.status} <br/>
+                  Species: {response.data.species}
+                </span>
+              </span>
+            </figure> : null }
+            </>
+          )
+   
+      })
+    )
+  }
 
-  return <>
-    <Scrollbars
-        autoHide
-        autoHeight
-        autoHeightMin={699}
-        autoHeightMax={699}
-      >
-        <div className="container align-items-stretch">
-        <div className="row justify-content-evenly">
-          
-            { characterData ? characterData.map(character => (
-              <NavLink key={character.id} to={character.name.replace(/\s+/g, '-').toLowerCase()} className="col-2 my-3 mx-2">
-                <img src={character.image} width="100%" height="auto" alt="character.namecharacter.name"/>  
+  React.useEffect(() => {
+
+    EventBus.subscribe('show-episode-characters', (event => {
+      eventData = event?.episodeData
+      setCharacterData([])
+      setShowEpisodeCharacters(true)
+      console.log('eventData', event?.episodeData)
+    }))
+  }, []);
+
+
+  interface CharacterListProps {
+    data: any
+    cssClass: string
+  }
+
+  const CharacterListRenderer = ({data, cssClass}:CharacterListProps) => {
+    return (
+      <>
+        {data ?
+          data.map(character => {
+            return (
+              <NavLink
+                key={character.id + Math.random()}
+                to={encodeURIComponent(character.name.replace(/\s+/g, '-').toLowerCase())}
+                className={`col-2 my-3 mx-2 ${cssClass}`}
+              >
+                <img src={character.image} alt={character.name} />
               </NavLink>
-              )) : null 
-            }
+            )
+          })
+          : null}
+      </>
+    )
+  }
 
-
-            { eventData ? 
-              <>
-              {/* <div key={generateAESKey as unknown as React.Key} className="col-2 my-3 mx-2">
-                {characterUrl}
-              </div> */}
-              <EpisodeCharacterDetails 
-                cssClass="d-inline"
+  return (
+   <>
+       <Scrollbars
+          autoHide
+          autoHeight
+          autoHeightMin={699}
+          autoHeightMax={699}
+        > 
+    <div className={`container align-items-stretch`}>
+      <div className="row justify-content-evenly">
+        <>
+          {console.log('rendering character list', characterData)}
+        </>
+        <>
+          {characterData ?
+            <CharacterListRenderer data={characterData} cssClass="character-image" />
+          : null}
+        </>
+        <>
+          {eventData ? (
+            <>
+        
+              <EpisodeCharactersRenderer
+                cssClass="character-image"
                 data={eventData}
               />
-              
-              
-            </> 
-            : null 
-            }
+            </>
+          ) : null}
+        </>
 
-
-        </div>
-        </div>
-        </Scrollbars>
-  </>;
+      </div>
+    </div>
+    </Scrollbars>
+    </>
+  );
 }
 
 const _CharacterList = CharacterList
 export { _CharacterList as CharacterList }
-
-
-// {
-//   "type": "show-episode-characters",
-//   "id": {},
-//   "timestamp": "2023-11-16T04:05:39.367Z",
-//   "episodeData": {
-//     "id": 2,
-//     "name": "Lawnmower Dog",
-//     "air_date": "December 9, 2013",
-//     "episode": "S01E02",
-//     "characters": [
-//       "https://rickandmortyapi.com/api/character/1",
-//       "https://rickandmortyapi.com/api/character/2",
-//       "https://rickandmortyapi.com/api/character/38",
-//       "https://rickandmortyapi.com/api/character/46",
-//       "https://rickandmortyapi.com/api/character/63",
-//       "https://rickandmortyapi.com/api/character/80",
-//       "https://rickandmortyapi.com/api/character/175",
-//       "https://rickandmortyapi.com/api/character/221",
-//       "https://rickandmortyapi.com/api/character/239",
-//       "https://rickandmortyapi.com/api/character/246",
-//       "https://rickandmortyapi.com/api/character/304",
-//       "https://rickandmortyapi.com/api/character/305",
-//       "https://rickandmortyapi.com/api/character/306",
-//       "https://rickandmortyapi.com/api/character/329",
-//       "https://rickandmortyapi.com/api/character/338",
-//       "https://rickandmortyapi.com/api/character/396",
-//       "https://rickandmortyapi.com/api/character/397",
-//       "https://rickandmortyapi.com/api/character/398",
-//       "https://rickandmortyapi.com/api/character/405"
-//     ],
-//     "url": "https://rickandmortyapi.com/api/episode/2",
-//     "created": "2017-11-10T12:56:33.916Z"
-//   }
-// }
-// const urlList = [
-//   "https://rickandmortyapi.com/api/character/1",
-//   "https://rickandmortyapi.com/api/character/2",
-//   "https://rickandmortyapi.com/api/character/35",
-//   "https://rickandmortyapi.com/api/character/38",
-//   "https://rickandmortyapi.com/api/character/62",
-//   "https://rickandmortyapi.com/api/character/92",
-//   "https://rickandmortyapi.com/api/character/127",
-//   "https://rickandmortyapi.com/api/character/144",
-//   "https://rickandmortyapi.com/api/character/158",
-//   "https://rickandmortyapi.com/api/character/175",
-//   "https://rickandmortyapi.com/api/character/179",
-//   "https://rickandmortyapi.com/api/character/181",
-//   "https://rickandmortyapi.com/api/character/239",
-//   "https://rickandmortyapi.com/api/character/249",
-//   "https://rickandmortyapi.com/api/character/271",
-//   "https://rickandmortyapi.com/api/character/338",
-//   "https://rickandmortyapi.com/api/character/394",
-//   "https://rickandmortyapi.com/api/character/395",
 //   "https://rickandmortyapi.com/api/character/435"
-// ]
+
+/*
+ 
+*/

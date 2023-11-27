@@ -7,6 +7,7 @@
       "context/*": ["context/*"],
       "views/*": ["views/*"],
       "assets/*": ["assets/*"],
+      "types/*": ["types/*"],
       "utils/*": ["utils/*"]
     },
     "target": "es5",
