@@ -9,26 +9,32 @@ import { CharacterListProps, IEpisodes } from 'types/types';
 import css from './CharacterList.module.scss';
 
 export default function CharacterList({ cssClass }: CharacterListProps) {
+  const [runOnce, setRunOnce] = React.useState<boolean>(false)
   const [eventData, setEventData] = React.useState<Array<string>>([])
   const [characterData, setCharacterData] = React.useState([])
   const gvars = React.useContext(GlobalVContext)
   const [showEpisodeCharacters, setShowEpisodeCharacters] = React.useState(false)
+  const [pageTitle, setPageTitle] = React.useState<string>('Characters')
 
   // Gets all characters
   async function getCharacters() {
+    setRunOnce(true)
+    setPageTitle('Characters')
     const response = await api.get('/character')
     setCharacterData(response.data.results);
     gvars.allCharacters = response.data.results
     console.log('characterData top', characterData)
   }
 
-  React.useEffect(() => { getCharacters() }, [])
 
   React.useEffect(() => {
+    // !runOnce ? getCharacters() : void (0)
+    getCharacters()
     EventBus.subscribe('show-episode-characters', (event => {
       setEventData(event?.episodeData)
       setCharacterData([])
       setShowEpisodeCharacters(true)
+      setPageTitle(`${gvars.currentEpisode} Characters`)
       console.log('eventData-eventbus', event?.episodeData)
     }))
   }, []);
@@ -99,7 +105,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
                 key={character.id + Math.random()}
                 to={encodeURIComponent(character.name.replace(/\s+/g, '-').toLowerCase())}
                 className={`col-2 my-3 mx-2 ${cssClass}`}
-                style={{ width: '33.333333%' }}
+                style={{ width: '25%' }}
               >
                 <img src={character.image} alt={character.name} className={css.characterImage} />
               </NavLink>
@@ -119,6 +125,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
         autoHeightMax={699}
       >
         <div className={`container align-items-stretch  ${cssClass}`}>
+        <h1 className="logo text-left mt-3 px-3">{ pageTitle }</h1>
           <div className="row justify-content-evenly">
             <span className="mx-auto">
               <>

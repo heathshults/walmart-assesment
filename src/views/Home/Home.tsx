@@ -11,7 +11,7 @@ export function Home({ children }: HomeProps) {
   return (
     <>
       <div className="vstack">
-        <h1 className="logo text-left mt-3 px-3">Characters</h1>
+        
         <CharacterList />
         { children }
       </div>

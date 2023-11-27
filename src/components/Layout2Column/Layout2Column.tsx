@@ -1,8 +1,9 @@
 import * as React from 'react';
 import logo from 'assets/img/21428161947-rick-and-morty-logo-png.webp'
+import { NavLink } from 'react-router-dom'
 import NavLeft from 'components/NavLeft'
-import { Outlet } from 'react-router-dom';
-import './Layout2Column.scss';
+import { Outlet } from 'react-router-dom'
+import './Layout2Column.scss'
 
 export interface Layout2ColumnProps {
   children?: React.ReactNode
@@ -15,7 +16,9 @@ export function Layout2Column() {
       <div className="container-fluid m-0 p-0">
         <div className="layout">
           <header className="header">
-            <img src={logo} width="300" alt="Rick and Morty" />
+            <NavLink to="/" className="logo">
+              <img src={logo} width="300" alt="Rick and Morty" />
+            </NavLink>
           </header>
           <main className="content">
 

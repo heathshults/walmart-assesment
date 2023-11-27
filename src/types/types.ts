@@ -71,6 +71,7 @@ export interface Location {
     api?: AxiosInstance
     value?: iGlobalConfig
     characters: [], // Add an empty array for characters
+    currentEpisode: string,
     currentEpisodeCharacters: [],
     allCharacters: [],
   }
@@ -112,6 +113,7 @@ export interface iGlobalConfig {
   },
   characters?: Array<ICharacter>,
   episodes?: Array<IEpisodes>,
+  currentEpisode?: string,
   currentEpisodeCharacters?: Array<Result>,
   allCharacters?: Array<string>,
 }

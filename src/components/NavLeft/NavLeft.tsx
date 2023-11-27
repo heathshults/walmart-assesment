@@ -33,6 +33,7 @@ export function NavLeft() {
     setEpisodeCharacters(episode)
     console.log('showEpisodeCharacters', episode)
     gvars.currentEpisodeCharacters = episode.characters
+    gvars.currentEpisode = episode.name
     return EventBus.publish('show-episode-characters', new ShowEpisodeCharactersEvent(episode.characters))
 
   }

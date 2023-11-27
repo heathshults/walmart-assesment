@@ -16,6 +16,7 @@ export const config: iGlobalConfig = {
     baseUrl: process.env.REACT_APP_API_BASE_URL
   },
   characters: [], // Add an empty array for characters
+  currentEpisode: 'The',
   currentEpisodeCharacters: [],
   allCharacters: [],
 };
