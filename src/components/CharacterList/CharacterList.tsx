@@ -10,7 +10,6 @@ import css from './CharacterList.module.scss';
 
 export default function CharacterList({ cssClass }: CharacterListProps) {
   const [eventData, setEventData] = React.useState<Array<string>>([])
-  const [currentEpisodeCharacters, setCurrentEpisodeCharacters] = React.useState([])
   const [characterData, setCharacterData] = React.useState([])
   const gvars = React.useContext(GlobalVContext)
   const [showEpisodeCharacters, setShowEpisodeCharacters] = React.useState(false)
@@ -73,10 +72,6 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
         container.current?.appendChild(character)
       }))
 
-    {/* <img 
-              href='${data.image}' 
-              class="my-3 mx-2 ${css.episodeCharacterImage} ${cssClass}"
-            /> */}
 
     return (
       <>
@@ -98,7 +93,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
     return (
       <>
         {data ?
-          data.map(character => {
+          data.map((character: { id: number; name: string; image: string; }) => {
             return (
               <NavLink
                 key={character.id + Math.random()}
@@ -123,7 +118,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
         autoHeightMin={699}
         autoHeightMax={699}
       >
-        <div className={`container align-items-stretch`}>
+        <div className={`container align-items-stretch  ${cssClass}`}>
           <div className="row justify-content-evenly">
             <span className="mx-auto">
               <>
@@ -146,8 +141,3 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
 
 const _CharacterList = CharacterList
 export { _CharacterList as CharacterList }
-//   "https://rickandmortyapi.com/api/character/435"
-
-/*
- 
-*/
