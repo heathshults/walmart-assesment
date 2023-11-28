@@ -2,29 +2,26 @@ import * as React from 'react';
 import api from 'config/api.config'
 import { NavLink } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { IEpisodes } from 'types';
+import { IEpisodes, iGlobalConfig, iEpisode } from 'types';
 import EventBus, { ShowEpisodeCharactersEvent } from 'utils/PubSubEvents/EventBus';
 import './NavLeft.scss';
 import { IShowEpisodeCharacters } from 'types'
 import GlobalVContext from 'context/global-context';
+// import { ReactQueryDevtools } from 'react-query/devtools'
+// import { useQuery } from 'react-query'
 
 
 
 // export interface NavLeftProps {
 //   children?: React.ReactNode
 // };
-interface iEpisode extends Array<IEpisodes>{
-  id: number
-  name: string
-  characters: Array<string>
-}
 
 
 export function NavLeft() {
-  const [episodes, setEpisodes] = React.useState<iEpisode>()
+  const [episodes, setEpisodes] = React.useState([])
   const [episodeCharacters, setEpisodeCharacters] = React.useState<string>()
   const [runOnce, setRunOnce] = React.useState<boolean>(false)
-  const gvars = React.useContext(GlobalVContext)
+  const gvars: iGlobalConfig = React.useContext(GlobalVContext)
 
   async function getEpisodes() {
     setRunOnce(true);
@@ -33,8 +30,10 @@ export function NavLeft() {
   }
 
   async function showEpisodeCharacters(id: number) {
-    const episode = episodes?.find(epi => epi.id === id);
-    setEpisodeCharacters(episode?.characters.join(', ')); // Fix for Problem 1
+    const episode = episodes?.find((epi) => epi.id === id);
+    setEpisodeCharacters(episode?.characters as unknown as React.SetStateAction<string>); 
+    gvars.currentEpisode = episode.name
+    return EventBus.publish('show-episode-characters', new ShowEpisodeCharactersEvent(episode.characters))
   }
 
   React.useEffect(() => {
@@ -48,7 +47,7 @@ export function NavLeft() {
       const episodeData = event.episodeData;
       const lastEpisode = episodeData.pop();
       if (typeof lastEpisode === 'string') {
-        console.log('episodeCharacters', lastEpisode); // Fix for Problem 3
+        console.log('episodeCharacters', lastEpisode);
       }
     });
     console.log('useEffect', episodes)
