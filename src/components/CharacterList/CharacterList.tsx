@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import EventBus from 'utils/PubSubEvents/EventBus';
 import GlobalVContext from 'context/global-context';
-import { CharacterListProps, IEpisodes } from 'types/types';
+import { CharacterListProps } from 'types/types';
 
 import css from './CharacterList.module.scss';
 
@@ -17,19 +17,19 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
   const [pageTitle, setPageTitle] = React.useState<string>('Characters')
 
   // Gets all characters
-  async function getCharacters() {
+  const getCharacters = React.useCallback(async () => {
     setRunOnce(true)
     setPageTitle('Characters')
     const response = await api.get('/character')
     setCharacterData(response.data.results);
     gvars.allCharacters = response.data.results
     console.log('characterData top', characterData)
-  }
+  }, [])
 
 
   React.useEffect(() => {
-    // !runOnce ? getCharacters() : void (0)
-    getCharacters()
+
+    // Listen for show-episode-characters event to show episode characters
     EventBus.subscribe('show-episode-characters', (event => {
       setEventData(event?.episodeData)
       setCharacterData([])
@@ -37,6 +37,17 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
       setPageTitle(`${gvars.currentEpisode} Characters`)
       console.log('eventData-eventbus', event?.episodeData)
     }))
+
+    // Listen for load-default-characters event to load default characters
+    EventBus.subscribe('load-default-characters', (event => {
+      event?.loadDefaultData ? getCharacters() : void (0)
+      setEventData([])
+      setShowEpisodeCharacters(false)
+      setCharacterData(gvars.allCharacters)
+      setPageTitle('Characters')
+    }))
+    
+    !runOnce ? getCharacters() : void (0)
   }, []);
 
 
@@ -45,6 +56,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
     cssClass: string
   }
 
+  // Renders episode characters
   const EpisodeCharactersRenderer = ({ data, cssClass }: EpisodeCharacterDetailsProps) => {
     const container = React.useRef<HTMLDivElement>(null)
 
@@ -58,18 +70,16 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
             key="${data.id + Math.random()}"
             class="ratio ratio-1x1 p-2"
             style="background-image: url('${data.image}'); background-size: cover; background-position: top center;"
-            >
+          >
             <span class='${css.characterDisplayName}'>
-            ${data.name}
-            <span class='${css.characterDisplayInfo}'>
-              Status: ${data.status} <br />
-              Species: ${data.species}
+              ${data.name}
+              <span class='${css.characterDisplayInfo}'>
+                Status: ${data.status} <br />
+                Species: ${data.species}
+              </span>
             </span>
-          </span>
-            
-            
-            </div>
-            `
+          </div>
+          `
 
         const character = document.createElement('div')
         character.classList.add('my-3', 'mx-2', cssClass, css.characterDisplay)
@@ -81,7 +91,6 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
 
     return (
       <>
-
         {showEpisodeCharacters ?
           <div ref={container} className="w-100 100vh"></div>
           : null}
@@ -95,6 +104,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
     cssClass: string
   }
 
+  // Renders all characters
   const CharacterListRenderer = ({ data, cssClass }: CharacterListProps) => {
     return (
       <>

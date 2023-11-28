@@ -68,7 +68,6 @@ export function NavLeft() {
               >
                 {episode.name}
               </NavLink>
-              // encodeURIComponent(episode.name.replace(/\s+/g, '-').toLowerCase())
             )) : null
             }
           </Scrollbars>

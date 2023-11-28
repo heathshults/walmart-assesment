@@ -5,6 +5,8 @@
   "homepage": "https://heathshults.github.io/wallmart-assessment/",
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@craco/craco": "^7.1.0",
+    "@craco/types": "^7.1.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.17",
@@ -31,10 +33,10 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test  — env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test  — env=jsdom",
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": [
