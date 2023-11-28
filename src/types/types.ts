@@ -14,8 +14,6 @@ export interface iGlobalV {
 }
   
 export interface GlobalVProviderProps extends React.ProviderProps<iGlobalConfig> {}
-
-
   
   // characters
   export interface ICharacter {
@@ -77,6 +75,7 @@ export interface Location {
   }
   export interface GlobalVProviderProps extends React.ProviderProps<iGlobalConfig> {}
   export type TCharacterList = Array<string>
+
   // events
   export type EventType = 'theme-change' | 'show-episode-characters' | 'load-default-characters';
   
@@ -92,7 +91,7 @@ export interface IShowEpisodeCharacters extends IBaseEvent {
   episodeData: Array<string>;
 }
 export interface ILoadDefaultCharacters extends IBaseEvent {
-  characterData: ICharacter;
+  loadDefaultData: boolean;
 }
 
 export interface IThemeChange extends IBaseEvent {
