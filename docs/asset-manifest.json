@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/wallmart-assessment/static/css/main.7aca5353.css",
+    "main.js": "/wallmart-assessment/static/js/main.097175fb.js",
+    "static/js/787.a56dff49.chunk.js": "/wallmart-assessment/static/js/787.a56dff49.chunk.js",
+    "static/media/21428161947-rick-and-morty-logo-png.webp": "/wallmart-assessment/static/media/21428161947-rick-and-morty-logo-png.3301c417bad65f5b0b4a.webp",
+    "index.html": "/wallmart-assessment/index.html",
+    "main.7aca5353.css.map": "/wallmart-assessment/static/css/main.7aca5353.css.map",
+    "main.097175fb.js.map": "/wallmart-assessment/static/js/main.097175fb.js.map",
+    "787.a56dff49.chunk.js.map": "/wallmart-assessment/static/js/787.a56dff49.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7aca5353.css",
+    "static/js/main.097175fb.js"
+  ]
+}
