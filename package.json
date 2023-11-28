@@ -1,8 +1,8 @@
 {
-  "name": "wallmart",
+  "name": "walmart",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://heathshults.github.io/wallmart-assessment/",
+  "homepage": "https://heathshults.github.io/wallmart-assessment/docs/",
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@craco/craco": "^7.1.0",
