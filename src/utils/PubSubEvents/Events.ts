@@ -23,7 +23,7 @@ class BaseEvent implements IBaseEvent {
  * @implements {IShowEpisodeCharacters}
  */
 export class ShowEpisodeCharactersEvent extends BaseEvent implements IShowEpisodeCharacters {
-  constructor(public episodeData: IEpisodes) {
+  constructor(public episodeData: []) {
     super("show-episode-characters");
   }
 }
