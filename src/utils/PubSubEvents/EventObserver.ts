@@ -9,6 +9,12 @@ export interface IObserver<EventType extends T> {
   publish: (event: Events[EventType]) => void;
 }
 
+/**
+ * @description Observer class provides a subscribe and publish method.
+ * @class Observer
+ * @implements {IObserver<EventType>}
+ * @template EventType
+ */
 export class Observer<EventType extends T> implements IObserver<EventType> {
   private listeners: Listener<EventType>[] = [];
 
