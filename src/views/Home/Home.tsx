@@ -4,7 +4,7 @@ import './Home.scss';
 
 export interface HomeProps {
     children?: React.ReactNode
-};
+}
 
 export function Home({ children }: HomeProps) {
 
