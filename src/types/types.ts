@@ -54,7 +54,7 @@ export interface Location {
 
 
 // episodes  
-  export interface IEpisodes extends Array<any> {
+  export interface IEpisodes extends Array<string> {
     id:         number;
     name:       string;
     air_date:   string;
@@ -127,11 +127,11 @@ export interface CharacterListProps {
   cssClass?: string
 }
 
-export interface KEYVAL_OBJECT<T> extends Record<string, any> {
+export interface KEYVAL_OBJECT<T> extends Record<string, unknown> {
   key: string;
   value: T;
 }
 
 export interface ARRAY_DATA<T> extends Array<T> {
-  [k: string]: boolean | number | string | any; 
+  [k: string]: boolean | number | string | unknown; 
 }

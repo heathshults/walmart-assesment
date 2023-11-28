@@ -13,34 +13,44 @@ import GlobalVContext from 'context/global-context';
 // export interface NavLeftProps {
 //   children?: React.ReactNode
 // };
-
+interface iEpisode extends Array<IEpisodes>{
+  id: number
+  name: string
+  characters: Array<string>
+}
 
 
 export function NavLeft() {
-  const [episodes, setEpisodes] = React.useState<Array<Record<string, any>> | any>()
+  const [episodes, setEpisodes] = React.useState<iEpisode>()
   const [episodeCharacters, setEpisodeCharacters] = React.useState<string>()
   const [runOnce, setRunOnce] = React.useState<boolean>(false)
   const gvars = React.useContext(GlobalVContext)
 
   async function getEpisodes() {
-    setRunOnce(true)
-    const response = await api.get('/episode')
-    setEpisodes(response.data.results)
+    setRunOnce(true);
+    const response = await api.get('/episode');
+    setEpisodes(response.data.results);
   }
 
   async function showEpisodeCharacters(id: number) {
-    const episode = episodes?.find(epi => epi.id === id)
-    setEpisodeCharacters(episode)
-    console.log('showEpisodeCharacters', episode)
-    gvars.currentEpisodeCharacters = episode.characters
-    gvars.currentEpisode = episode.name
-    return EventBus.publish('show-episode-characters', new ShowEpisodeCharactersEvent(episode.characters))
-
+    const episode = episodes?.find(epi => epi.id === id);
+    setEpisodeCharacters(episode?.characters.join(', ')); // Fix for Problem 1
   }
 
-
   React.useEffect(() => {
-    !runOnce ? getEpisodes() : void (0)
+    if (!runOnce) {
+      getEpisodes();
+    }
+
+    console.log('useEffect', episodes);
+
+    EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
+      const episodeData = event.episodeData;
+      const lastEpisode = episodeData.pop();
+      if (typeof lastEpisode === 'string') {
+        console.log('episodeCharacters', lastEpisode); // Fix for Problem 3
+      }
+    });
     console.log('useEffect', episodes)
 
     EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
