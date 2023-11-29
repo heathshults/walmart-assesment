@@ -2,11 +2,13 @@ import * as React from 'react';
 import api from 'config/api.config'
 import { NavLink } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { IEpisodes } from 'types';
+import { IEpisodes, iGlobalConfig, iEpisode } from 'types';
 import EventBus, { ShowEpisodeCharactersEvent } from 'utils/PubSubEvents/EventBus';
 import './NavLeft.scss';
 import { IShowEpisodeCharacters } from 'types'
 import GlobalVContext from 'context/global-context';
+// import { ReactQueryDevtools } from 'react-query/devtools'
+// import { useQuery } from 'react-query'
 
 
 
@@ -15,32 +17,39 @@ import GlobalVContext from 'context/global-context';
 // };
 
 
-
 export function NavLeft() {
-  const [episodes, setEpisodes] = React.useState<Array<Record<string, any>> | any>()
+  const [episodes, setEpisodes] = React.useState([])
   const [episodeCharacters, setEpisodeCharacters] = React.useState<string>()
   const [runOnce, setRunOnce] = React.useState<boolean>(false)
-  const gvars = React.useContext(GlobalVContext)
+  const gvars: iGlobalConfig = React.useContext(GlobalVContext)
 
   async function getEpisodes() {
-    setRunOnce(true)
-    const response = await api.get('/episode')
-    setEpisodes(response.data.results)
+    setRunOnce(true);
+    const response = await api.get('/episode');
+    setEpisodes(response.data.results);
   }
 
   async function showEpisodeCharacters(id: number) {
-    const episode = episodes?.find(epi => epi.id === id)
-    setEpisodeCharacters(episode)
-    console.log('showEpisodeCharacters', episode)
-    gvars.currentEpisodeCharacters = episode.characters
+    const episode = episodes?.find((epi) => epi.id === id);
+    setEpisodeCharacters(episode?.characters as unknown as React.SetStateAction<string>); 
     gvars.currentEpisode = episode.name
     return EventBus.publish('show-episode-characters', new ShowEpisodeCharactersEvent(episode.characters))
-
   }
 
-
   React.useEffect(() => {
-    !runOnce ? getEpisodes() : void (0)
+    if (!runOnce) {
+      getEpisodes();
+    }
+
+    console.log('useEffect', episodes);
+
+    EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {
+      const episodeData = event.episodeData;
+      const lastEpisode = episodeData.pop();
+      if (typeof lastEpisode === 'string') {
+        console.log('episodeCharacters', lastEpisode);
+      }
+    });
     console.log('useEffect', episodes)
 
     EventBus.subscribe('show-episode-characters', (event: IShowEpisodeCharacters) => {

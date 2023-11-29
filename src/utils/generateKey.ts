@@ -19,7 +19,7 @@ export async function generateAESKey() {
   return key
 }
 
-const keyGen ={
+const keyGen = {
   guid: generateGUId, 
   aes: generateAESKey
 }

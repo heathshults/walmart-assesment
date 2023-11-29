@@ -28,7 +28,7 @@ export interface Info {
     prev?:  null;
 }
 
-export interface Result extends Array<string> {
+export interface Result {
   id?:       number;
   name?:     string;
   status?:   string;
@@ -44,6 +44,9 @@ export interface Result extends Array<string> {
 }
 
 
+export class iKeyVal<T> extends Array<T> {}
+
+
 export type iCharacterDetails = Result
 export type Character = iCharacterDetails
 
@@ -54,13 +57,20 @@ export interface Location {
 
 
 // episodes  
-  export interface IEpisodes extends Array<any> {
-    id:         number;
-    name:       string;
-    air_date:   string;
-    episode:    string;
-    characters: string[];
+  // export interface IEpisodes extends Array<string> {
+  //   id:         number;
+  //   name:       string;
+  //   air_date:   string;
+  //   episode:    string;
+  //   characters: string[];
+  // }
+  export interface iEpisode {
+    id: number
+    name: string
+    characters: Array<string>
   }
+  
+  export class IEpisodes<T> extends Array<iEpisode> {}
   
 /* GlobaVContext Interface */
   export interface iGlobalVContext {
@@ -111,7 +121,7 @@ export interface iGlobalConfig {
     baseUrl?: string
   },
   characters?: Array<ICharacter>,
-  episodes?: Array<IEpisodes>,
+  episodes?: [],
   currentEpisode?: string,
   currentEpisodeCharacters?: Array<Result>,
   allCharacters?: Array<string>,
@@ -127,11 +137,11 @@ export interface CharacterListProps {
   cssClass?: string
 }
 
-export interface KEYVAL_OBJECT<T> extends Record<string, any> {
+export interface KEYVAL_OBJECT<T> extends Record<string, unknown> {
   key: string;
   value: T;
 }
 
 export interface ARRAY_DATA<T> extends Array<T> {
-  [k: string]: boolean | number | string | any; 
+  [k: string]: boolean | number | string | unknown; 
 }

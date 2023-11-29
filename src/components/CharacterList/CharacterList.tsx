@@ -99,8 +99,14 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
     )
   }
 
+  interface ISingleCharacter {
+    id: number; 
+    name: string; 
+    image: string;
+  }
+
   interface CharacterListProps {
-    data: any
+    data: Array<ISingleCharacter>
     cssClass: string
   }
 
