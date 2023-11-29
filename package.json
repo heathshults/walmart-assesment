@@ -34,10 +34,10 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test  — env=jsdom",
-    "eject": "craco eject"
+    "start": "node_modules/.bin/craco start",
+    "build": "node_modules/.bin/craco craco build",
+    "test": "node_modules/.bin/craco craco test  — env=jsdom",
+    "eject": "node_modules/.bin/craco craco eject"
   },
   "eslintConfig": {
     "extends": [
