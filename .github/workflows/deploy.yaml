@@ -19,7 +19,7 @@ jobs:
       shell: bash
       run: |
         echo "::group::Build"
-        npm ci
+        # npm ci
         npm run build
         echo "::endgroup::"
     - name: 'upload'
