@@ -10,10 +10,24 @@ permissions:
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: 'https://heathshults.github.io/walmart-assessment/'
     runs-on: ubuntu-latest
     steps:
-    - id: build-publish
-      uses: bitovi/github-actions-react-to-github-pages@v1.2.0
+    - name: 'Build'
+      shell: bash
+      run: |
+        echo "::group::Build"
+        npm ci
+        npm run build
+        echo "::endgroup::"
+    - name: 'upload'
+      uses: actions/upload-pages-artifact@v1.0.4
+      with: 
+        path: build
+    - id: deploy
+      name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v1
       with:
-        path: build # build folder
-    - run: yarn build
+        token: ${{ github.token }}

@@ -2,7 +2,7 @@
   "name": "walmart",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/",
+  "homepage": "https://heathshults.github.io/wallmart-assessment/",
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@craco/craco": "^7.1.0",
@@ -65,6 +65,7 @@
   "devDependencies": {
     "@emotion/babel-preset-css-prop": "^11.11.0",
     "customize-cra": "^1.0.0",
+    "gh-pages": "^6.1.0",
     "reactcci": "^1.12.0"
   }
 }
