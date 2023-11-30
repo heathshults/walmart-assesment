@@ -5,6 +5,8 @@ import { Scrollbars } from 'react-custom-scrollbars-2';
 import EventBus from 'utils/PubSubEvents/EventBus';
 import GlobalVContext from 'context/global-context';
 import { CharacterListProps } from 'types/types';
+import { ReactQueryDevtools } from 'react-query/devtools'
+import { useQuery } from 'react-query'
 
 import css from './CharacterList.module.scss';
 
@@ -25,10 +27,10 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
     gvars.allCharacters = response.data.results
     console.log('characterData top', characterData)
   }, [])
-
-
+  
+  
   React.useEffect(() => {
-
+    
     // Listen for show-episode-characters event to show episode characters
     EventBus.subscribe('show-episode-characters', (event => {
       setEventData(event?.episodeData)
@@ -37,7 +39,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
       setPageTitle(`${gvars.currentEpisode} Characters`)
       console.log('eventData-eventbus', event?.episodeData)
     }))
-
+    
     // Listen for load-default-characters event to load default characters
     EventBus.subscribe('load-default-characters', (event => {
       event?.loadDefaultData ? getCharacters() : void (0)
@@ -48,6 +50,7 @@ export default function CharacterList({ cssClass }: CharacterListProps) {
     }))
     
     !runOnce ? getCharacters() : void (0)
+    
   }, []);
 
 
